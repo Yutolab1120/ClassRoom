@@ -59,6 +59,7 @@
                                         style="font-size:20px;margin-top:2px;margin-bottom:15px;" id="my-id">
                                     </p>
                                     <button id="camera" class="waves-effect waves-light btn-small">ルーム作成</button>&nbsp;
+                                    <button id="share" class="waves-effect waves-light btn-small">画面共有</button>&nbsp;
                                     <button id="stop" class="waves-effect waves-light btn-small">退出する</button>
                                 </div>
                         </li>
@@ -109,6 +110,13 @@
                     const theirID = document.getElementById('their-id').value;
                     const mediaConnection = peer.call(theirID, localStream, { videoBandwidth: 14000 });//request bandwidth
                     setEventListener(mediaConnection);
+                }
+                const setEventListener = mediaConnection => {
+                    mediaConnection.on('stream', stream => {
+                        const videoElm = document.getElementById('their-video')
+                        videoElm.srcObject = stream;
+                        videoElm.play();
+                    });
                 }
                 peer.on('call', mediaConnection => {
                     mediaConnection.answer(localStream, { videoBandwidth: 14000 });
