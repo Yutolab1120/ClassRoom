@@ -69,7 +69,6 @@
             <a href="https://social-plugins.line.me/lineit/share?url=https://caster.glitch.me/front"><img width="40" src="img/line.png"></a>
 
             </div>
-
         </div>
 
             <script>
@@ -82,7 +81,7 @@
                     document.getElementById('my-id').textContent = peer.id;
                 });//ここでpeerID取得
                 document.getElementById('share').onclick = () => {
-                    navigator.mediaDevices.getDisplayMedia({ video: { width: 1280, height: 720, frameRate: 60 }, audio: false })
+                    navigator.mediaDevices.getDisplayMedia({ video: { width: 1280, height: 720, frameRate: 60 }, audio: true })
                         .then(stream => {
                             const videoElm = document.getElementById('my-video')
                             videoElm.srcObject = stream;
@@ -93,7 +92,7 @@
                         });
                 }
                 document.getElementById('camera').onclick = () => {
-                    navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720, frameRate: 60 }, audio: false })//set video quality 
+                    navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720, frameRate: 60 }, audio: true })//set video quality 
                         .then(stream => {
                             const videoElm = document.getElementById('my-video')
                             videoElm.srcObject = stream;
