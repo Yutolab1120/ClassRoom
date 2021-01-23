@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title>Class Room</title>
+    <link href="style/style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper">
+            <img class="brand-logo center" width="150" style="margin-top:10px;" src="img/classroom (1).png">
+        </div>
+    </nav>
+    <div class="container"><br>
+        <h6 align="center"><b>時間割</b></h5>
+        <p class="box"></p>
+    </div>
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large red">
+            <i class="large material-icons">dehaze</i>
+        </a>
+        <ul>
+            <li><a class="btn-floating red" href="index.html"><i class="material-icons">access_time</i></a></li>
+            <li><a class="btn-floating yellow darken-1" href="schedule.html"><i
+                        class="material-icons">assessment</i></a></li>
+            <li><a class="btn-floating green" href="cast.html"><i class="material-icons">cast</i></a></li>
+            <li><a class="btn-floating blue" href="chat.html"><i class="material-icons">info</i></a></li>
+        </ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('.fixed-action-btn');
+            var instances = M.FloatingActionButton.init(elems, {
+                direction: 'left',
+                hoverEnabled: false
+            });
+        });
+    </script>
+
+</body>
+
+</html>

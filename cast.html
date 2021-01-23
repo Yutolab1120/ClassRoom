@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title>Class Room</title>
+    <link href="style/style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.11/dist/css/uikit.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.11/dist/js/uikit.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.11/dist/js/uikit-icons.min.js"></script>
+
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper">
+            <img class="brand-logo center" width="150" style="margin-top:10px;" src="img/classroom (1).png">
+        </div>
+    </nav>
+    <div class="container" style="max-width:900px;"><br>
+
+            <ul uk-tab>
+                <li><a href="#"><i class="fa fa-video-camera "></i>&nbsp; 参加</a></li>
+                <li><a href="#"><i class="fa fa-tachometer "></i>&nbsp; 作る</a></li>
+            </ul>
+            <ul class="uk-switcher uk-margin">
+                <li>
+                    <video id="their-video" width="100%" height="400px" poster="img/ogp.png" autoplay muted playsinline
+                        controls></video>
+                    <ul uk-accordion>
+                        <li>
+                            <a class="uk-accordion-title" href="#"><span style="margin-top:5px;margin-bottom:1px;"
+                                    class="uk-label">ルームKeyの設定</span></a>
+                            <div class="uk-accordion-content">
+                                <div class="uk-margin">
+                                    <input id="their-id" type="text" class="uk-input uk-form-width-medium"
+                                        placeholder="ルームKeyを入力">&nbsp;
+                                        <button id="make-call" class="waves-effect waves-light btn-small">ルームに参加</button>
+                                </div>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <video id="my-video" width="100%" height="400px" poster="img/ogp.png" autoplay muted playsinline
+                        controls></video>
+                    <ul uk-accordion>
+                        <li>
+                            <a class="uk-accordion-title" href="#"><span style="margin-top:5px;margin-bottom:1px;"
+                                    class="uk-label">管理パネル</span></a>
+                            <div class="uk-accordion-content">
+                                <div class="uk-margin">
+                                    <p class="uk-placeholder uk-text-center"
+                                        style="font-size:20px;margin-top:2px;margin-bottom:15px;" id="my-id">
+                                    </p>
+                                    <button id="camera" class="waves-effect waves-light btn-small">ルーム作成</button>&nbsp;
+                                    <button id="stop" class="waves-effect waves-light btn-small">退出する</button>
+                                </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <a href="https://social-plugins.line.me/lineit/share?url=https://caster.glitch.me/front"><img width="40" src="img/line.png"></a>
+
+            </div>
+
+        </div>
+
+            <script>
+                let localStream;//グローバル変数として用意
+                const peer = new Peer({
+                    key: '320e8f26-3e2a-4804-b922-e59bd58b7d37',
+                    debug: 1
+                });
+                peer.on('open', () => {
+                    document.getElementById('my-id').textContent = peer.id;
+                });//ここでpeerID取得
+                document.getElementById('share').onclick = () => {
+                    navigator.mediaDevices.getDisplayMedia({ video: { width: 1280, height: 720, frameRate: 60 }, audio: false })
+                        .then(stream => {
+                            const videoElm = document.getElementById('my-video')
+                            videoElm.srcObject = stream;
+                            videoElm.play();
+                            localStream = stream;//映像をグローバル変数に
+                            const theirID = document.getElementById('their-id').value;
+                            const mediaConnection = peer.call(theirID, localStream, { videoBandwidth: 14000 });
+                        });
+                }
+                document.getElementById('camera').onclick = () => {
+                    navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720, frameRate: 60 }, audio: false })//set video quality 
+                        .then(stream => {
+                            const videoElm = document.getElementById('my-video')
+                            videoElm.srcObject = stream;
+                            videoElm.play();
+                            localStream = stream;
+                            const theirID = document.getElementById('their-id').value;
+                            const mediaConnection = peer.call(theirID, localStream, { videoBandwidth: 14000 });
+                        });
+                }
+                document.getElementById('stop').onclick = () => {
+                    localStream.getVideoTracks()[0].stop();
+                }
+                document.getElementById('make-call').onclick = () => {
+                    const theirID = document.getElementById('their-id').value;
+                    const mediaConnection = peer.call(theirID, localStream, { videoBandwidth: 14000 });//request bandwidth
+                    setEventListener(mediaConnection);
+                }
+                const setEventListener = mediaConnection => {
+                    mediaConnection.on('stream', stream => {
+                        const videoElm = document.getElementById('their-video')
+                        videoElm.srcObject = stream;
+                        videoElm.play();
+                    });
+                }
+                peer.on('call', mediaConnection => {
+                    mediaConnection.answer(localStream, { videoBandwidth: 14000 });
+                    setEventListener(mediaConnection);
+                });
+            </script>
+    </div>
+
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large red">
+            <i class="large material-icons">dehaze</i>
+        </a>
+        <ul>
+            <li><a class="btn-floating red" href="index.html"><i class="material-icons">access_time</i></a></li>
+            <li><a class="btn-floating yellow darken-1" href="schedule.html"><i
+                        class="material-icons">assessment</i></a></li>
+            <li><a class="btn-floating green" href="cast.html"><i class="material-icons">cast</i></a></li>
+            <li><a class="btn-floating blue" href="chat.html"><i class="material-icons">info</i></a></li>
+        </ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('.fixed-action-btn');
+            var instances = M.FloatingActionButton.init(elems, {
+                direction: 'left',
+                hoverEnabled: false
+            });
+        });
+    </script>
+
+</body>
+
+</html>

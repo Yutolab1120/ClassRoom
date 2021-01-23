@@ -1,0 +1,9 @@
+.nav-wrapper {
+    background: rgb(247, 247, 247);
+}
+.large {
+    background: rgb(153, 211, 206);
+}
+p.box {
+   border-bottom: 2px solid rgb(230, 230, 230);
+}
